@@ -75,12 +75,13 @@ class AzCli(CLI):
         self.data['query_active'] = False
 
         azure_folder = self.config.config_dir
+        azure_immutable_folder = os.environ.get('AZURE_IMMUTABLE_DIR', azure_folder)
         ensure_dir(azure_folder)
         ACCOUNT.load(os.path.join(azure_folder, 'azureProfile.json'))
         CONFIG.load(os.path.join(azure_folder, 'az.json'))
         SESSION.load(os.path.join(azure_folder, 'az.sess'), max_age=3600)
-        INDEX.load(os.path.join(azure_folder, 'commandIndex.json'))
-        VERSIONS.load(os.path.join(azure_folder, 'versionCheck.json'))
+        INDEX.load(os.path.join(azure_immutable_folder, 'commandIndex.json'))
+        VERSIONS.load(os.path.join(azure_immutable_folder, 'versionCheck.json'))
         handle_version_update()
 
         self.cloud = get_active_cloud(self)

@@ -17,7 +17,8 @@ def _get_extension_command_tree(cli_ctx):
     VALID_SECOND = 3600 * 24 * 10
     if not cli_ctx:
         return None
-    EXT_CMD_TREE.load(os.path.join(cli_ctx.config.config_dir, 'extensionCommandTree.json'), VALID_SECOND)
+    azure_immutable_folder = os.environ.get('AZURE_IMMUTABLE_DIR', cli_ctx.config.config_dir)
+    EXT_CMD_TREE.load(os.path.join(azure_immutable_folder, 'extensionCommandTree.json'), VALID_SECOND)
     if not EXT_CMD_TREE.data:
         import posixpath
         import requests

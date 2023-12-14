@@ -85,6 +85,19 @@ class Session(MutableMapping):
         return len(self.data)
 
 
+class ImmutableSession(Session):
+    """
+    A session that is backed by an immutable JSON file. This session is read-only.
+    """
+    def save(self):
+        if os.getenv('AZURE_IMMUTABLE_DIR'):
+            get_logger(__name__).log(logging.DEBUG,
+                                     "Skipping update of file %s due to immutable directory.",
+                                     self.filename)
+            return
+        super().save()
+
+
 # ACCOUNT contains subscriptions information
 ACCOUNT = Session()
 
@@ -95,16 +108,16 @@ CONFIG = Session()
 SESSION = Session()
 
 # INDEX contains {top-level command: [command_modules and extensions]} mapping index
-INDEX = Session()
+INDEX = ImmutableSession()
 
 # VERSIONS provides local versions and pypi versions.
 # DO NOT USE it to get the current version of azure-cli,
 # it could be lagged behind and can be used to check whether
 # an upgrade of azure-cli happens
-VERSIONS = Session()
+VERSIONS = ImmutableSession()
 
 # EXT_CMD_TREE provides command to extension name mapping
-EXT_CMD_TREE = Session()
+EXT_CMD_TREE = ImmutableSession()
 
 # CLOUD_ENDPOINTS provides endpoints/suffixes of clouds
 CLOUD_ENDPOINTS = Session()
